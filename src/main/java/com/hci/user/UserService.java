@@ -34,13 +34,13 @@ public class UserService {
     public Map<String, Object> login(String userId, String password) {
         HashMap<String, Object> result = new HashMap<>();
         try {
-            if (userMapper.isExsit(userId) == null) {
+            if (userMapper.isExist(userId) == null) {
                 result.put("status", operationStatus.FAILED);
                 result.put("userId", null);
                 return result;
             }
             String encryptedPassword = shaEncryption.passwordEncryption(password);
-            User existUser = userMapper.existUser(userId, encryptedPassword);
+            String existUser = userMapper.existUser(userId, encryptedPassword);
             if (existUser != null) {
                 result.put("userId", userId);
                 result.put("status", operationStatus.SUCCESSFUL);
@@ -73,7 +73,8 @@ public class UserService {
         HashMap<String, Object> result = new HashMap<>();
 
         try {
-            if (userMapper.createUser(userId, password) == 1 &&
+            String encryptedPassword = shaEncryption.passwordEncryption(password);
+            if (userMapper.createUser(userId, encryptedPassword) == 1 &&
                     userMapper.createAccount(userId, nickname, major) == 1) {
                 result.put("status",operationStatus.SUCCESSFUL);
                 result.put("userId",userId);

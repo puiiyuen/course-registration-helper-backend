@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.*;
 public interface UserMapper {
 
     @Select("SELECT user_id FROM user WHERE user_id=#{userId}")
-    String isExsit(String userId);
+    String isExist(String userId);
 
 
     @Results({
@@ -21,7 +21,7 @@ public interface UserMapper {
     })
     @Select("SELECT user_id FROM user " +
             "WHERE user_id=#{userId} AND password=#{password} ")
-    User existUser(String userId, String password);
+    String existUser(String userId, String password);
 
 //    @Results({
 //            @Result(property = "userId", column = "user_id"),
