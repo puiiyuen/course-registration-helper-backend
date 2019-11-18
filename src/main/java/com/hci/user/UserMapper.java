@@ -38,8 +38,8 @@ public interface UserMapper {
     @Insert("INSERT INTO user (user_id,password) VALUES (#{userId},#{password})")
     int createUser(String userId, String password);
 
-    @Insert("INSERT INTO psn_info (user_id,nickname,major) VALUES (#{userId},#{nickname},#{major})")
-    int createAccount(String userId,String nickname,String major);
+    @Insert("INSERT INTO psn_info (user_id,nickname,major,degree) VALUES (#{userId},#{nickname},#{major},#{degree})")
+    int createAccount(String userId,String nickname,String major,String degree);
 
 
 //    @Update("UPDATE user_auth SET phone=#{phone},email=#{email},update_date=CURRENT_TIMESTAMP" +

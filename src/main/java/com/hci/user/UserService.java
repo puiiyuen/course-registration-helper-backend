@@ -37,6 +37,7 @@ public class UserService {
             if (userMapper.isExist(userId) == null) {
                 result.put("status", operationStatus.FAILED);
                 result.put("userId", null);
+                result.put("message","User does not exist, please sign up a new account");
                 return result;
             }
             String encryptedPassword = shaEncryption.passwordEncryption(password);
@@ -44,15 +45,22 @@ public class UserService {
             if (existUser != null) {
                 result.put("userId", userId);
                 result.put("status", operationStatus.SUCCESSFUL);
+                result.put("message","OK");
             } else {
                 result.put("status", operationStatus.FAILED);
                 result.put("userId", null);
+                result.put("message","Please check your A-Number and password if they are correct.");
             }
             return result;
         } catch (Exception e) {
             e.printStackTrace();
             result.put("status", operationStatus.SERVERERROR);
             result.put("userId", null);
+            if (DevMode.ON) {
+                result.put("message", e.toString());
+            } else {
+                result.put("message", DevMode.unknownError);
+            }
             return result;
         }
 
@@ -69,19 +77,29 @@ public class UserService {
 //    }
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public Object createAccount(String userId, String nickname, String password, String major) {
+    public Object createAccount(String userId, String nickname, String password, String major,String degree) {
         HashMap<String, Object> result = new HashMap<>();
 
         try {
             String encryptedPassword = shaEncryption.passwordEncryption(password);
+
+            if (userMapper.isExist(userId)!=null){
+                result.put("userId",null);
+                result.put("status",operationStatus.FAILED);
+                result.put("message","User existed, please use another A-Number");
+                return result;
+            }
+
             if (userMapper.createUser(userId, encryptedPassword) == 1 &&
-                    userMapper.createAccount(userId, nickname, major) == 1) {
+                    userMapper.createAccount(userId, nickname, major,degree) == 1) {
                 result.put("status",operationStatus.SUCCESSFUL);
                 result.put("userId",userId);
+                result.put("message","OK");
             } else {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
                 result.put("userId",null);
                 result.put("status",operationStatus.FAILED);
+                result.put("message","Failed to sign up, please try again.");
             }
             return result;
         } catch (Exception e) {
@@ -89,9 +107,19 @@ public class UserService {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
             result.put("userId",null);
             result.put("status",operationStatus.SERVERERROR);
+            if (DevMode.ON){
+                result.put("message",e.toString());
+            } else {
+                result.put("message",DevMode.unknownError);
+            }
             return result;
         }
 
+    }
+
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public Object createAccount(String userId, String nickname, String password,String degree) {
+            return createAccount(userId,nickname,password, "undeclared",degree);
     }
 
 //    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
