@@ -67,14 +67,14 @@ public class UserService {
     }
 
 
-//    public User getUserById(String userId) {
-//        try {
-//            return userMapper.getUserById(userId);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
+    public User getUserById(String userId) {
+        try {
+            return userMapper.getUserById(userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public Object createAccount(String userId, String nickname, String password, String major,String degree) {

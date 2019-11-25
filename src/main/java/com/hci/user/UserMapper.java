@@ -23,16 +23,15 @@ public interface UserMapper {
             "WHERE user_id=#{userId} AND password=#{password} ")
     String existUser(String userId, String password);
 
-//    @Results({
-//            @Result(property = "userId", column = "user_id"),
-//            @Result(property = "username", column = "username"),
-//            @Result(property = "phone", column = "phone"),
+    @Results({
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "nickname", column = "nickname"),
 //            @Result(property = "email", column = "email"),
-//            @Result(property = "userType", column = "user_type")
-//    })
-//    @Select("SELECT user_id,username,phone,email,user_type FROM user_auth WHERE user_id=#{userId} " +
-//            "AND account_status='activated'")
-//    User getUserById(String userId);
+            @Result(property = "degree", column = "degree"),
+            @Result(property = "major", column = "major")
+    })
+    @Select("SELECT user_id,nickname,degree,major FROM psn_info WHERE user_id=#{userId}")
+    User getUserById(String userId);
 
 
     @Insert("INSERT INTO user (user_id,password) VALUES (#{userId},#{password})")

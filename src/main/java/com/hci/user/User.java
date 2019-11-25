@@ -10,72 +10,62 @@ package com.hci.user;
 
 public class User {
 
-    private int userId;
-    private String username;
-    private String phone;
-    private String email;
-    private String password;
+    private String userId;
+    private String nickname;
+
+
+
+    private String degree;
+    private String major;
 
     public User(){
         super();
     }
 
-    public User(User user) {
+    public User(String userId, String nickname, String degree, String major) {
+        this.userId = userId;
+        this.nickname = nickname;
+        this.degree = degree;
+        this.major = major;
+    }
+
+    public User(User user){
         this.setUserId(user.getUserId());
-        this.setPassword(user.getPassword());
-        this.setUsername(user.getUsername());
-        this.setPhone(user.getPhone());
-        this.setEmail(user.getEmail());
+        this.setNickname(user.getNickname());
+        this.setDegree(user.getDegree());
+        this.setMajor(user.getMajor());
     }
 
-    public User defaultUser(){
-        User du = new User();
-        du.setEmail("noname@no.com");
-        du.setPhone("000-000-000");
-        du.setPassword("null");
-        du.setUserId(-1);
-        du.setUsername("noname");
-        return du;
-    }
-
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getDegree() {
+        return degree;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setDegree(String degree) {
+        this.degree = degree;
     }
 
-    public String getEmail() {
-        return email;
+    public String getMajor() {
+        return major;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setMajor(String major) {
+        this.major = major;
     }
 
 }

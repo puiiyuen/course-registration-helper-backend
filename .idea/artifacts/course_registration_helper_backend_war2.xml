@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="course-registration-helper-backend:war2">
+    <output-path>$PROJECT_DIR$/out/artifacts/course_registration_helper_backend_war2</output-path>
+    <root id="archive" name="course-registration-helper-backend_war.war">
+      <element id="artifact" artifact-name="course-registration-helper-backend:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -9,6 +9,7 @@
 package com.hci.user;
 
 import com.hci.utils.DevMode;
+import com.hci.utils.SessionCheck;
 import com.hci.utils.operationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -107,20 +108,35 @@ public class UserController {
             return result;
         }
     }
-//
-//    @GetMapping("/user")
-//    public User getOnlineUser(HttpSession session) {
-//        User fetch = new User();
-//        try {
-//            if (session.getAttribute("userId") != null) {
-//                fetch = userService.getUserById(Integer.parseInt(session.getAttribute("userId").toString()));
-//                return fetch;
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return fetch.defaultUser();
-//    }
+
+    @GetMapping("/user")
+    public Object getOnlineUser(HttpSession session) {
+        User fetch;
+        HashMap<String, Object> result = new HashMap<>();
+        try {
+            if (SessionCheck.isOnline(session)) {
+                fetch = userService.getUserById(session.getAttribute("userId").toString());
+                if (fetch == null){
+                    result.put("status",operationStatus.FAILED);
+                    result.put("user",null);
+                    result.put("message","Cannot find the user, please check the user ID");
+                }
+                result.put("status",operationStatus.SUCCESSFUL);
+                result.put("user",fetch);
+                result.put("message","OK");
+            } else {
+                result.put("status",operationStatus.FAILED);
+                result.put("user",null);
+                result.put("message","User have not logged in. OR Session is timeout. Please log in");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("status",operationStatus.SERVERERROR);
+            result.put("user",null);
+            result.put("message",e.toString());
+        }
+        return result;
+    }
 
     @GetMapping("/logout")
     public Object logout(HttpSession session) {
