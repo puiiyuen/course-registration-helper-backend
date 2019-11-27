@@ -133,7 +133,11 @@ public class UserController {
             e.printStackTrace();
             result.put("status",operationStatus.SERVERERROR);
             result.put("user",null);
-            result.put("message",e.toString());
+            if (DevMode.ON) {
+                result.put("message", e.toString());
+            } else {
+                result.put("message", DevMode.unknownError);
+            }
         }
         return result;
     }
