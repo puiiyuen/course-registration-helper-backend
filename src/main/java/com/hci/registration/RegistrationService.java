@@ -1,5 +1,6 @@
 package com.hci.registration;
 
+import com.hci.utils.operationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.*;
@@ -27,6 +28,15 @@ public class RegistrationService {
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
             return false;
+        }
+    }
+
+    public Object getCourseRegistrationList(String userId){
+        try {
+            return registrationMapper.getCourseRegistrationList(userId);
+        } catch (Exception e){
+            e.printStackTrace();
+            return operationStatus.SERVERERROR+" Cannot get course registration list";
         }
     }
 

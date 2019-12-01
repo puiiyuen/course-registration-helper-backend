@@ -19,6 +19,32 @@ public class RegistrationController {
     @Autowired
     private RegistrationService registrationService;
 
+    @GetMapping("/list")
+    public Object getCourseRegistrationList(HttpSession session) {
+        HashMap<String, Object> result = new HashMap<>();
+        try {
+            if (SessionCheck.isOnline(session)) {
+                String userId = session.getAttribute("userId").toString();
+                result.put("courses", registrationService.getCourseRegistrationList(userId));
+                result.put("message", OperationMessage.OK);
+                result.put("status", operationStatus.SUCCESSFUL);
+            } else {
+                result.put("message", OperationMessage.OFFLINE);
+                result.put("status", operationStatus.FAILED);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("status", operationStatus.SERVERERROR);
+            result.put("courses","Cannot get course registration list");
+            if (DevMode.ON) {
+                result.put("message", e.toString());
+            } else {
+                result.put("message", DevMode.unknownError);
+            }
+        }
+        return result;
+    }
+
     @PostMapping("/add")
     public Object addCourses(@RequestBody Map<String, Object> param, HttpSession session) {
         HashMap<String, Object> result = new HashMap<>();
@@ -26,7 +52,7 @@ public class RegistrationController {
             if (SessionCheck.isOnline(session)) {
                 String userId = session.getAttribute("userId").toString();
                 List<String> toAddCourses = (List<String>) param.get("courses");
-                if (registrationService.addCourses(userId, toAddCourses)){
+                if (registrationService.addCourses(userId, toAddCourses)) {
                     result.put("message", OperationMessage.OK + " " + toAddCourses.size() + " courses added");
                     result.put("status", operationStatus.SUCCESSFUL);
                 } else {

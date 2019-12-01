@@ -4,15 +4,17 @@ public class Registration {
 
     private String userId;
     private String courseId;
+    private String courseName;
     private String courseStatus;
 
     public Registration() {
         super();
     }
 
-    public Registration(String userId, String courseId, String courseStatus) {
+    public Registration(String userId, String courseId, String courseName, String courseStatus) {
         this.userId = userId;
         this.courseId = courseId;
+        this.courseName = courseName;
         this.courseStatus = courseStatus;
     }
 
@@ -30,6 +32,14 @@ public class Registration {
 
     public void setCourseId(String courseId) {
         this.courseId = courseId;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
     }
 
     public String getCourseStatus() {
