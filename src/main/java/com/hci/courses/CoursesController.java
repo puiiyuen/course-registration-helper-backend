@@ -22,7 +22,8 @@ public class CoursesController {
         HashMap<String,Object> finalResult = new HashMap<>();
         try {
             if (SessionCheck.isOnline(session)){
-                return coursesService.getCourseList();
+                String userId = session.getAttribute("userId").toString();
+                return coursesService.getCourseList(userId);
             }
             finalResult.put("courses","Cannot get course list");
             finalResult.put("message","User have not logged in. OR Session is timeout. Please log in");

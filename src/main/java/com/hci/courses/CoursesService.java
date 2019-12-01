@@ -15,41 +15,67 @@ public class CoursesService {
     @Autowired
     private CoursesMapper coursesMapper;
 
-    public Object getCourseList() {
-        HashMap<String,Object> finalResult = new HashMap<>();
-        List<HashMap<String, Object>> result = new ArrayList<>();
+    public Object getElectiveCourses() {
         try {
+            List<HashMap<String, Object>> result = new ArrayList<>();
             List<Subject> subjectList = coursesMapper.getSubjectList();
             for (Subject subject : subjectList) {
                 HashMap<String, Object> course = new HashMap<>();
                 course.put("label", subject.getSubjectName());
-                course.put("value", subject.getSubjectName());
+                course.put("value", subject.getSubjectId());
                 List<Courses> coursesList = coursesMapper.getCourseListBySubject(subject.getSubjectId());
                 List<HashMap<String, Object>> items = new ArrayList<>();
-                for (Courses courses: coursesList){
+                for (Courses courses : coursesList) {
                     HashMap<String, Object> item = new HashMap<>();
-                    item.put("value",courses);
-                    item.put("label",courses.getCourseId()+" "+courses.getCourseName());
+                    item.put("value", courses);
+                    item.put("label", courses.getCourseId() + " " + courses.getCourseName());
                     items.add(item);
                 }
                 course.put("children", items);
                 result.add(course);
             }
-            finalResult.put("courses",result);
-            finalResult.put("message","OK");
-            finalResult.put("status",operationStatus.SUCCESSFUL);
-            return finalResult;
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
-            finalResult.put("courses","Cannot get course list");
-            if (DevMode.ON) {
-                finalResult.put("message", e.toString());
-            } else {
-                finalResult.put("message", DevMode.unknownError);
-            }
-            finalResult.put("status", operationStatus.SERVERERROR);
-            return finalResult;
+            return operationStatus.SERVERERROR + ": Cannot get electiveCourses";
         }
     }
 
+    public Object getRequiredCourses(String userId) {
+        try {
+            List<Courses> requiredCoursesList = coursesMapper.getRequiredCourses(userId);
+            List<HashMap<String, Object>> items = new ArrayList<>();
+            for (Courses requiredCourse : requiredCoursesList) {
+                HashMap<String, Object> item = new HashMap<>();
+                item.put("value", requiredCourse.getCourseId());
+                item.put("label", requiredCourse.getCourseId() + " " + requiredCourse.getCourseName());
+                items.add(item);
+            }
+            return items;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return operationStatus.SERVERERROR + ": Cannot get requiredCourses";
+        }
+
+    }
+
+    public Object getCourseList(String userId) {
+        HashMap<String, Object> courses = new HashMap<>();
+        try {
+            courses.put("requiredCourses", getRequiredCourses(userId));
+            courses.put("electiveCourses", getElectiveCourses());
+            courses.put("message","OK");
+            courses.put("status",operationStatus.SUCCESSFUL);
+        } catch (Exception e) {
+            e.printStackTrace();
+            courses.put("courses","Cannot fetch course list");
+            courses.put("status",operationStatus.SERVERERROR);
+            if (DevMode.ON) {
+                courses.put("message", e.toString());
+            } else {
+                courses.put("message", DevMode.unknownError);
+            }
+        }
+        return courses;
+    }
 }
