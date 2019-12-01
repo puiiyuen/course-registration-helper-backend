@@ -27,10 +27,12 @@ public interface UserMapper {
             @Result(property = "userId", column = "user_id"),
             @Result(property = "nickname", column = "nickname"),
 //            @Result(property = "email", column = "email"),
-            @Result(property = "degree", column = "degree"),
-            @Result(property = "major", column = "major")
+            @Result(property = "degree_name", column = "degree"),
+            @Result(property = "major_name", column = "major")
     })
-    @Select("SELECT user_id,nickname,degree,major FROM psn_info WHERE user_id=#{userId}")
+    @Select("SELECT user_id,nickname,d.degree_name,m.major_name " +
+            "FROM psn_info AS p, major AS m, degree AS d " +
+            "WHERE user_id=#{userId} AND m.major_id=p.major AND d.degree_id=p.degree")
     User getUserById(String userId);
 
 

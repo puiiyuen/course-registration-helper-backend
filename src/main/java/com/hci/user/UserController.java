@@ -8,6 +8,7 @@
 
 package com.hci.user;
 
+import com.hci.courses.CoursesService;
 import com.hci.utils.DevMode;
 import com.hci.utils.SessionCheck;
 import com.hci.utils.operationStatus;
@@ -24,6 +25,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private CoursesService coursesService;
 
     @PostMapping("/login")
     public Object login(@RequestBody Map<String, Object> param, HttpSession session) {
@@ -72,6 +75,24 @@ public class UserController {
             e.printStackTrace();
             result.put("status", operationStatus.SERVERERROR);
             result.put("userId", null);
+            if (DevMode.ON) {
+                result.put("message", e.toString());
+            } else {
+                result.put("message", DevMode.unknownError);
+            }
+            return result;
+        }
+    }
+
+    @GetMapping("/sign-up-major")
+    public Object signUpMajor() {
+        HashMap<String, Object> result = new HashMap<>();
+        try {
+            return coursesService.getDegreeMajor();
+        } catch (Exception e){
+            e.printStackTrace();
+            result.put("status", operationStatus.SERVERERROR);
+            result.put("degreeMajor", "Cannot get degree & major list");
             if (DevMode.ON) {
                 result.put("message", e.toString());
             } else {

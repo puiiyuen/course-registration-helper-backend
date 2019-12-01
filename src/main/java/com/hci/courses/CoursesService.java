@@ -1,13 +1,10 @@
 package com.hci.courses;
 
-import com.hci.utils.DevMode;
-import com.hci.utils.operationStatus;
+import com.hci.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CoursesService {
@@ -64,12 +61,12 @@ public class CoursesService {
         try {
             courses.put("requiredCourses", getRequiredCourses(userId));
             courses.put("electiveCourses", getElectiveCourses());
-            courses.put("message","OK");
-            courses.put("status",operationStatus.SUCCESSFUL);
+            courses.put("message", "OK");
+            courses.put("status", operationStatus.SUCCESSFUL);
         } catch (Exception e) {
             e.printStackTrace();
-            courses.put("courses","Cannot fetch course list");
-            courses.put("status",operationStatus.SERVERERROR);
+            courses.put("courses", "Cannot fetch course list");
+            courses.put("status", operationStatus.SERVERERROR);
             if (DevMode.ON) {
                 courses.put("message", e.toString());
             } else {
@@ -77,5 +74,41 @@ public class CoursesService {
             }
         }
         return courses;
+    }
+
+    public Object getDegreeMajor() {
+        HashMap<String, Object> result = new HashMap<>();
+        List<Object> degreeMajor = new ArrayList<>();
+        try {
+            List<Degree> degreeList = coursesMapper.getDegreeList();
+            for (Degree degree : degreeList) {
+                HashMap<String, Object> degreeItem = new HashMap<>();
+                degreeItem.put("value ", degree.getDegreeId());
+                degreeItem.put("label", degree.getDegreeName());
+                List<Major> majorList = coursesMapper.getMajorByDegreeId(degree.getDegreeId());
+                List<HashMap<String, Object>> majorDTO = new ArrayList<>();
+                for (Major major: majorList){
+                    HashMap<String, Object> majorItem = new HashMap<>();
+                    majorItem.put("value",major.getMajorId());
+                    majorItem.put("label",major.getMajorName());
+                    majorDTO.add(majorItem);
+                }
+                degreeItem.put("children",majorDTO);
+                degreeMajor.add(degreeItem);
+            }
+            result.put("degreeMajor", degreeMajor);
+            result.put("message", "OK");
+            result.put("status", operationStatus.SUCCESSFUL);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("status", operationStatus.SERVERERROR);
+            result.put("degreeMajor", "Cannot get degree & major list");
+            if (DevMode.ON) {
+                result.put("message", e.toString());
+            } else {
+                result.put("message", DevMode.unknownError);
+            }
+        }
+        return result;
     }
 }

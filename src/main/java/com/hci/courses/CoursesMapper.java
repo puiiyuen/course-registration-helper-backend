@@ -37,5 +37,19 @@ public interface CoursesMapper {
             "ORDER BY subject_id DESC ")
     List<Courses> getRequiredCourses(String userId);
 
+    @Results({
+            @Result(property = "degreeId", column = "degree_id"),
+            @Result(property = "degreeName", column = "degree_name")
+    })
+    @Select("SELECT * FROM degree")
+    List<Degree> getDegreeList();
+
+    @Results({
+            @Result(property = "majorId", column = "major_id"),
+            @Result(property = "majorName", column = "major_name")
+    })
+    @Select("SELECT * FROM major WHERE degree_id=#{degreeId}")
+    List<Major> getMajorByDegreeId(String degreeId);
+
 
 }
