@@ -15,8 +15,11 @@ public interface CoursesMapper {
             @Result(property = "creditHour", column = "credit_hour"),
             @Result(property = "subjectId", column = "subject_id")
     })
-    @Select("SELECT * FROM courses WHERE subject_id=#{subjectJd}")
-    List<Courses> getCourseListBySubject(String subjectId);
+    @Select("SELECT c.* FROM courses AS c,registration AS rg " +
+            "WHERE subject_id=#{subjectId} AND " +
+            "c.course_id NOT IN (SELECT c.course_id FROM courses AS c, registration AS rg " +
+            "WHERE c.course_id=rg.course_id AND rg.user_id=#{userId})")
+    List<Courses> getCourseListBySubject(String subjectId,String userId);
 
     @Results({
             @Result(property = "subjectId", column = "subject_id"),
@@ -32,8 +35,11 @@ public interface CoursesMapper {
             @Result(property = "subjectId", column = "subject_id")
     })
     @Select("SELECT DISTINCT c.course_id,course_name,credit_hour,subject_id " +
-            "FROM courses AS c,required_courses AS r,psn_info AS p " +
-            "WHERE c.course_id=r.course_id AND r.major_id =p.major AND p.user_id=#{userId} " +
+            "FROM courses AS c,required_courses AS r,psn_info AS p,registration AS rg " +
+            "WHERE c.course_id=r.course_id AND r.major_id =p.major " +
+            "AND p.user_id=#{userId} AND c.course_id " +
+            "NOT IN (SELECT c.course_id FROM courses AS c, registration AS rg " +
+            "WHERE c.course_id=rg.course_id AND rg.user_id=#{userId}) " +
             "ORDER BY subject_id DESC ")
     List<Courses> getRequiredCourses(String userId);
 
