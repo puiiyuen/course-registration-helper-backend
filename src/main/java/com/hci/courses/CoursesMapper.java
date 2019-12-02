@@ -15,7 +15,7 @@ public interface CoursesMapper {
             @Result(property = "creditHour", column = "credit_hour"),
             @Result(property = "subjectId", column = "subject_id")
     })
-    @Select("SELECT c.* FROM courses AS c,registration AS rg " +
+    @Select("SELECT DISTINCT c.* FROM courses AS c,registration AS rg " +
             "WHERE subject_id=#{subjectId} AND " +
             "c.course_id NOT IN (SELECT c.course_id FROM courses AS c, registration AS rg " +
             "WHERE c.course_id=rg.course_id AND rg.user_id=#{userId})")
@@ -40,7 +40,7 @@ public interface CoursesMapper {
             "AND p.user_id=#{userId} AND c.course_id " +
             "NOT IN (SELECT c.course_id FROM courses AS c, registration AS rg " +
             "WHERE c.course_id=rg.course_id AND rg.user_id=#{userId}) " +
-            "ORDER BY subject_id DESC ")
+            "ORDER BY subject_id ASC ")
     List<Courses> getRequiredCourses(String userId);
 
     @Results({

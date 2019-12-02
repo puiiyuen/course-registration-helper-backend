@@ -16,13 +16,11 @@ public class RegistrationService {
     private RegistrationMapper registrationMapper;
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public boolean addCourses(String userId, List<String> courses) {
+    public boolean addCourses(String userId, String course) {
         try {
-            for (String course : courses) {
-                if (registrationMapper.addCourse(userId, course) != 1) {
-                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
-                    return false;
-                }
+            if (registrationMapper.addCourse(userId, course) != 1) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
+                return false;
             }
             return true;
         } catch (Exception e) {
@@ -32,16 +30,76 @@ public class RegistrationService {
         }
     }
 
-    public Object getCourseRegistrationList(String userId){
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public boolean dropCourses(String userId, String course) {
         try {
-            return registrationMapper.getCourseRegistrationList(userId);
-        } catch (Exception e){
+            if (registrationMapper.dropCourse(userId, course) != 1) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
             e.printStackTrace();
-            return operationStatus.SERVERERROR+" Cannot get course registration list";
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
+            return false;
         }
     }
 
-    public Object getBasicInfo(String userId){
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public boolean completeCourses(String userId, String courseId, String letterGrade) {
+        try {
+            double gradePoint;
+            String status = "Passed";
+            if (letterGrade.equals("A+")) {
+                gradePoint = 4.3;
+            } else if (letterGrade.equals("A")) {
+                gradePoint = 4.0;
+            } else if (letterGrade.equals("A-")) {
+                gradePoint = 3.7;
+            } else if (letterGrade.equals("B+")) {
+                gradePoint = 3.3;
+            } else if (letterGrade.equals("B")) {
+                gradePoint = 3.0;
+            } else if (letterGrade.equals("B-")) {
+                gradePoint = 2.7;
+            } else if (letterGrade.equals("C+")) {
+                gradePoint = 2.3;
+            } else if (letterGrade.equals("C")) {
+                gradePoint = 2.0;
+            } else if (letterGrade.equals("C-")) {
+                gradePoint = 1.7;
+            } else if (letterGrade.equals("D")) {
+                gradePoint = 1.0;
+            } else if (letterGrade.equals("F")) {
+                gradePoint = 0.0;
+                status = "Failed";
+            } else {
+                return false;
+            }
+
+            if (registrationMapper.completeCourse(userId, courseId, status, letterGrade, gradePoint) != 1) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//Manual transaction rollback
+            return false;
+        }
+    }
+
+
+    public Object getCourseRegistrationList(String userId) {
+        try {
+            return registrationMapper.getCourseRegistrationList(userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return operationStatus.SERVERERROR + " Cannot get course registration list";
+        }
+    }
+
+    public Object getBasicInfo(String userId) {
         HashMap<String, Object> result = new HashMap<>();
         try {
             BasicInfo basicInfo = new BasicInfo();

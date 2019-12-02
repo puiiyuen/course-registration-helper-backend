@@ -6,6 +6,7 @@ public class Registration {
     private String courseId;
     private String courseName;
     private String courseStatus;
+    private int creditHour;
     private String subject;
     private String letterGrade;
     private double gradePoint;
@@ -14,11 +15,12 @@ public class Registration {
         super();
     }
 
-    public Registration(String userId, String courseId, String courseName, String courseStatus, String subject, String letterGrade, double gradePoint) {
+    public Registration(String userId, String courseId, String courseName, String courseStatus, int creditHour, String subject, String letterGrade, double gradePoint) {
         this.userId = userId;
         this.courseId = courseId;
         this.courseName = courseName;
         this.courseStatus = courseStatus;
+        this.creditHour = creditHour;
         this.subject = subject;
         this.letterGrade = letterGrade;
         this.gradePoint = gradePoint;
@@ -54,6 +56,14 @@ public class Registration {
 
     public void setCourseStatus(String courseStatus) {
         this.courseStatus = courseStatus;
+    }
+
+    public int getCreditHour() {
+        return creditHour;
+    }
+
+    public void setCreditHour(int creditHour) {
+        this.creditHour = creditHour;
     }
 
     public String getSubject() {

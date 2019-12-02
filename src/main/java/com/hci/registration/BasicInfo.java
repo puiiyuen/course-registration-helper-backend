@@ -39,4 +39,13 @@ public class BasicInfo {
     public void setGPA(double GPA) {
         this.GPA = (double)Math.round(GPA*100)/100;
     }
+
+    public void setGPA(int GPA){
+        if (GPA == 0){
+            this.GPA = 0.00;
+        } else {
+            this.GPA = (double)Math.round(GPA*100)/100;
+        }
+    }
+
 }

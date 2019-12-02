@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,15 +24,15 @@ public class RegistrationController {
     public Object getBasicInfo(HttpSession session) {
         HashMap<String, Object> result = new HashMap<>();
         try {
-            if (SessionCheck.isOnline(session)){
+            if (SessionCheck.isOnline(session)) {
                 String userId = session.getAttribute("userId").toString();
-                result.put("basicGradeInfo",registrationService.getBasicInfo(userId));
-                result.put("status",operationStatus.SUCCESSFUL);
-                result.put("message",OperationMessage.OK);
+                result.put("basicGradeInfo", registrationService.getBasicInfo(userId));
+                result.put("status", operationStatus.SUCCESSFUL);
+                result.put("message", OperationMessage.OK);
             } else {
                 result.put("message", OperationMessage.OFFLINE);
                 result.put("status", operationStatus.FAILED);
-                result.put("basicGradeInfo","Cannot get basic grade info");
+                result.put("basicGradeInfo", "Cannot get basic grade info");
             }
 
         } catch (Exception e) {
@@ -42,7 +43,7 @@ public class RegistrationController {
                 result.put("message", DevMode.unknownError);
             }
             result.put("status", operationStatus.SERVERERROR);
-            result.put("basicGradeInfo","Cannot get basic grade info");
+            result.put("basicGradeInfo", "Cannot get basic grade info");
         }
         return result;
     }
@@ -73,20 +74,53 @@ public class RegistrationController {
         return result;
     }
 
-    @PostMapping("/add")
-    public Object addCourses(@RequestBody Map<String, Object> param, HttpSession session) {
+    @PostMapping("")
+    public Object coursesRegistration(@RequestBody Map<String, Object> param, HttpSession session) {
         HashMap<String, Object> result = new HashMap<>();
         try {
             if (SessionCheck.isOnline(session)) {
                 String userId = session.getAttribute("userId").toString();
-                List<String> toAddCourses = (List<String>) param.get("courses");
-                if (registrationService.addCourses(userId, toAddCourses)) {
-                    result.put("message", OperationMessage.OK + " " + toAddCourses.size() + " courses added");
-                    result.put("status", operationStatus.SUCCESSFUL);
-                } else {
-                    result.put("message", "Cannot add new courses: There is no course OR course has been already added");
-                    result.put("status", operationStatus.FAILED);
+                List<Map<String, Object>> courses = (List<Map<String, Object>>) param.get("courses");
+                List<String> opStatusList = new ArrayList<>();
+                for (Map<String, Object> course : courses) {
+                    int operation = course.get("op") == null ? 1 : (int) course.get("op");
+                    String courseId = course.get("courseId").toString();
+                    if (operation == 1) {
+                        //add
+                        if (registrationService.addCourses(userId, courseId)) {
+                            opStatusList.add(courseId + ": add operation success");
+                        } else {
+                            opStatusList.add(courseId + ": add operation fail");
+                        }
+                    } else if (operation == 2) {
+                        //pass
+                        if (registrationService.completeCourses(userId, courseId,
+                                course.get("letterGrade").toString())) {
+                            opStatusList.add(courseId + ": passed operation success");
+                        } else {
+                            opStatusList.add(courseId + ": passed operation fail");
+                        }
+                    } else if (operation == 3) {
+                        //failed
+                        if (registrationService.completeCourses(userId, courseId, "F")) {
+                            opStatusList.add(courseId + ": fail operation success");
+                        } else {
+                            opStatusList.add(courseId + ": fail operation fail");
+                        }
+                    } else if (operation == 4) {
+                        //drop
+                        if (registrationService.dropCourses(userId, courseId)) {
+                            opStatusList.add(courseId + ": drop operation success");
+                        } else {
+                            opStatusList.add(courseId + ": drop operation fail");
+                        }
+                    } else {
+                        //cannot do
+                        opStatusList.add(courseId + ": wrong operation code");
+                    }
                 }
+                result.put("message", opStatusList);
+                result.put("status", operationStatus.SUCCESSFUL);
             } else {
                 result.put("message", OperationMessage.OFFLINE);
                 result.put("status", operationStatus.FAILED);
@@ -102,4 +136,6 @@ public class RegistrationController {
         }
         return result;
     }
+
+
 }
