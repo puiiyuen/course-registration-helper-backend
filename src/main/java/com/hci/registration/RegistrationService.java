@@ -1,5 +1,6 @@
 package com.hci.registration;
 
+import com.hci.utils.DevMode;
 import com.hci.utils.operationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,26 @@ public class RegistrationService {
             e.printStackTrace();
             return operationStatus.SERVERERROR+" Cannot get course registration list";
         }
+    }
+
+    public Object getBasicInfo(String userId){
+        HashMap<String, Object> result = new HashMap<>();
+        try {
+            BasicInfo basicInfo = new BasicInfo();
+            basicInfo.setGPA(registrationMapper.getGPA(userId));
+            basicInfo.setInProgress(registrationMapper.getInProgress(userId));
+            basicInfo.setTotalCreditHour(registrationMapper.getTotalCreditHour(userId));
+            return basicInfo;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (DevMode.ON) {
+                result.put("message", e.toString());
+            } else {
+                result.put("message", DevMode.unknownError);
+            }
+            result.put("status", operationStatus.SERVERERROR);
+        }
+        return result;
     }
 
 }

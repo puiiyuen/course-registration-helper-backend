@@ -19,6 +19,34 @@ public class RegistrationController {
     @Autowired
     private RegistrationService registrationService;
 
+    @GetMapping("/info")
+    public Object getBasicInfo(HttpSession session) {
+        HashMap<String, Object> result = new HashMap<>();
+        try {
+            if (SessionCheck.isOnline(session)){
+                String userId = session.getAttribute("userId").toString();
+                result.put("basicGradeInfo",registrationService.getBasicInfo(userId));
+                result.put("status",operationStatus.SUCCESSFUL);
+                result.put("message",OperationMessage.OK);
+            } else {
+                result.put("message", OperationMessage.OFFLINE);
+                result.put("status", operationStatus.FAILED);
+                result.put("basicGradeInfo","Cannot get basic grade info");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (DevMode.ON) {
+                result.put("message", e.toString());
+            } else {
+                result.put("message", DevMode.unknownError);
+            }
+            result.put("status", operationStatus.SERVERERROR);
+            result.put("basicGradeInfo","Cannot get basic grade info");
+        }
+        return result;
+    }
+
     @GetMapping("/list")
     public Object getCourseRegistrationList(HttpSession session) {
         HashMap<String, Object> result = new HashMap<>();
@@ -35,7 +63,7 @@ public class RegistrationController {
         } catch (Exception e) {
             e.printStackTrace();
             result.put("status", operationStatus.SERVERERROR);
-            result.put("courses","Cannot get course registration list");
+            result.put("courses", "Cannot get course registration list");
             if (DevMode.ON) {
                 result.put("message", e.toString());
             } else {
