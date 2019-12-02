@@ -27,8 +27,8 @@ public interface UserMapper {
             @Result(property = "userId", column = "user_id"),
             @Result(property = "nickname", column = "nickname"),
 //            @Result(property = "email", column = "email"),
-            @Result(property = "degreeName", column = "degree"),
-            @Result(property = "majorName", column = "major")
+            @Result(property = "degree", column = "degree_name"),
+            @Result(property = "major", column = "major_name")
     })
     @Select("SELECT user_id,nickname,d.degree_name,m.major_name " +
             "FROM psn_info AS p, major AS m, degree AS d " +
