@@ -7,17 +7,21 @@ public class Registration {
     private String courseName;
     private String courseStatus;
     private String subject;
+    private String letterGrade;
+    private double gradePoint;
 
     public Registration() {
         super();
     }
 
-    public Registration(String userId, String courseId, String courseName, String courseStatus, String subject) {
+    public Registration(String userId, String courseId, String courseName, String courseStatus, String subject, String letterGrade, double gradePoint) {
         this.userId = userId;
         this.courseId = courseId;
         this.courseName = courseName;
         this.courseStatus = courseStatus;
         this.subject = subject;
+        this.letterGrade = letterGrade;
+        this.gradePoint = gradePoint;
     }
 
     public String getUserId() {
@@ -60,4 +64,19 @@ public class Registration {
         this.subject = subject;
     }
 
+    public String getLetterGrade() {
+        return letterGrade;
+    }
+
+    public void setLetterGrade(String letterGrade) {
+        this.letterGrade = letterGrade;
+    }
+
+    public double getGradePoint() {
+        return gradePoint;
+    }
+
+    public void setGradePoint(double gradePoint) {
+        this.gradePoint = gradePoint;
+    }
 }

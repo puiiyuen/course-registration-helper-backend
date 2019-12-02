@@ -12,6 +12,17 @@ public class CoursesService {
     @Autowired
     private CoursesMapper coursesMapper;
 
+    public List<HashMap<String, Object>> courseWrapper(List<Courses> coursesList) {
+        List<HashMap<String, Object>> items = new ArrayList<>();
+        for (Courses courses : coursesList) {
+            HashMap<String, Object> item = new HashMap<>();
+            item.put("value", courses.getCourseId());
+            item.put("label", courses.getCourseId() + " " + courses.getCourseName());
+            items.add(item);
+        }
+        return items;
+    }
+
     public Object getElectiveCourses(String userId) {
         try {
             List<HashMap<String, Object>> result = new ArrayList<>();
@@ -32,16 +43,6 @@ public class CoursesService {
         }
     }
 
-    public List<HashMap<String, Object>> courseWrapper(List<Courses> coursesList) {
-        List<HashMap<String, Object>> items = new ArrayList<>();
-        for (Courses courses : coursesList) {
-            HashMap<String, Object> item = new HashMap<>();
-            item.put("value", courses.getCourseId());
-            item.put("label", courses.getCourseId() + " " + courses.getCourseName());
-            items.add(item);
-        }
-        return items;
-    }
 
     public Object getRequiredCourses(String userId) {
         try {
@@ -81,7 +82,7 @@ public class CoursesService {
             List<Degree> degreeList = coursesMapper.getDegreeList();
             for (Degree degree : degreeList) {
                 HashMap<String, Object> degreeItem = new HashMap<>();
-                degreeItem.put("value ", degree.getDegreeId());
+                degreeItem.put("value", degree.getDegreeId());
                 degreeItem.put("label", degree.getDegreeName());
                 List<Major> majorList = coursesMapper.getMajorByDegreeId(degree.getDegreeId());
                 List<HashMap<String, Object>> majorDTO = new ArrayList<>();
