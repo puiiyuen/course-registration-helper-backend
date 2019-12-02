@@ -18,10 +18,11 @@ public interface RegistrationMapper {
             @Result(property = "courseId", column = "course_id"),
             @Result(property = "courseName", column = "course_name"),
             @Result(property = "courseStatus", column = "status"),
-            @Result(property = "gradePoint", column = "grade_point")
+            @Result(property = "subject",column = "subject_name")
     })
-    @Select("SELECT user_id,r.course_id,c.course_name,status FROM registration AS r,courses AS c " +
-            "WHERE user_id=#{userId} AND r.course_id=c.course_id")
+    @Select("SELECT user_id,r.course_id,c.course_name,status,s.subject_name " +
+            "FROM registration AS r,courses AS c,subject AS s " +
+            "WHERE user_id=#{userId} AND r.course_id=c.course_id AND s.subject_id=c.subject_id")
     List<Registration> getCourseRegistrationList(String userId);
 
     @Select("SELECT SUM(c.credit_hour) AS 'total_credit_hour' FROM courses AS c,registration AS r " +
