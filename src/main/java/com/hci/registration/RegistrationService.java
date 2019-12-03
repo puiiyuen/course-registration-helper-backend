@@ -73,6 +73,9 @@ public class RegistrationService {
             } else if (letterGrade.equals("F")) {
                 gradePoint = 0.0;
                 status = "Failed";
+            } else if (letterGrade.equals("-")) {
+                gradePoint = -1.0;
+                status = "In-Progress";
             } else {
                 return false;
             }

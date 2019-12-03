@@ -83,14 +83,21 @@ public class RegistrationController {
                 List<Map<String, Object>> courses = (List<Map<String, Object>>) param.get("courses");
                 List<String> opStatusList = new ArrayList<>();
                 for (Map<String, Object> course : courses) {
-                    int operation = course.get("op") == null ? 1 : (int) course.get("op");
+                    int operation = course.get("op") == null ? 0 : (int) course.get("op");
                     String courseId = course.get("courseId").toString();
-                    if (operation == 1) {
+                    if (operation == 0) {
                         //add
                         if (registrationService.addCourses(userId, courseId)) {
                             opStatusList.add(courseId + ": add operation success");
                         } else {
                             opStatusList.add(courseId + ": add operation fail");
+                        }
+                    } else if (operation == 1) {
+                        //in-progress
+                        if (registrationService.completeCourses(userId, courseId, "-")) {
+                            opStatusList.add(courseId + ": in-progress operation success");
+                        } else {
+                            opStatusList.add(courseId + ": in-progress operation fail");
                         }
                     } else if (operation == 2) {
                         //pass

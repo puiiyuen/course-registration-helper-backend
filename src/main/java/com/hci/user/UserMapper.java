@@ -40,13 +40,18 @@ public interface UserMapper {
     int createUser(String userId, String password);
 
     @Insert("INSERT INTO psn_info (user_id,nickname,major,degree) VALUES (#{userId},#{nickname},#{major},#{degree})")
-    int createAccount(String userId,String nickname,String major,String degree);
+    int createAccount(String userId, String nickname, String major, String degree);
 
+    @Update("UPDATE psn_info SET nickname=#{nickname} WHERE user_id=#{userId}")
+    int changeNickname(String nickname, String userId);
 
-//    @Update("UPDATE user_auth SET phone=#{phone},email=#{email},update_date=CURRENT_TIMESTAMP" +
-//            " WHERE user_id=#{userId} AND account_status!='destroy'")
-//    int modifyContact(String userId, String phone, String email);
+    @Update("UPDATE user SET password=#{password} WHERE user_id=#{userId}")
+    int changePassword(String password, String userId);
 
+    @Update("UPDATE psn_info SET major=#{major} WHERE user_id=#{userId}")
+    int changeMajor(String major, String userId);
 
+    @Update("UPDATE psn_info SET degree=#{degree} WHERE user_id=#{userId}")
+    int changeDegree(String degree, String userId);
 
 }
