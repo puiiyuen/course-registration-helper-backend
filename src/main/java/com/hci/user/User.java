@@ -12,21 +12,22 @@ public class User {
 
     private String userId;
     private String nickname;
-
-
-
     private String degree;
     private String major;
+    private String degreeId;
+    private String majorId;
 
     public User(){
         super();
     }
 
-    public User(String userId, String nickname, String degree, String major) {
+    public User(String userId, String nickname, String degree, String major, String degreeId, String majorId) {
         this.userId = userId;
         this.nickname = nickname;
         this.degree = degree;
         this.major = major;
+        this.degreeId = degreeId;
+        this.majorId = majorId;
     }
 
     public User(User user){
@@ -34,6 +35,8 @@ public class User {
         this.setNickname(user.getNickname());
         this.setDegree(user.getDegree());
         this.setMajor(user.getMajor());
+        this.setMajorId(user.getMajorId());
+        this.setDegreeId(user.getDegreeId());
     }
 
     public String getUserId() {
@@ -68,4 +71,19 @@ public class User {
         this.major = major;
     }
 
+    public String getDegreeId() {
+        return degreeId;
+    }
+
+    public void setDegreeId(String degreeId) {
+        this.degreeId = degreeId;
+    }
+
+    public String getMajorId() {
+        return majorId;
+    }
+
+    public void setMajorId(String majorId) {
+        this.majorId = majorId;
+    }
 }
