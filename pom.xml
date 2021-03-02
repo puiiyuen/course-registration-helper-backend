@@ -16,7 +16,7 @@
 <version>1.0-SNAPSHOT</version>
 
 <name>course-registration-helper</name>
-<packaging>war</packaging>
+<packaging>jar</packaging>
 <description>Server-side for Course Registration System</description>
 
 <properties>
